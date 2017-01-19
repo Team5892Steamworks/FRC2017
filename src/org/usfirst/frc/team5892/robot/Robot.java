@@ -3,6 +3,8 @@ package org.usfirst.frc.team5892.robot;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -14,6 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	
+	NetworkTable table;
+	
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
 	String autoSelected;
@@ -29,6 +34,8 @@ public class Robot extends IterativeRobot {
 	Joystick m_driveStick = new Joystick(1);
 	@Override
 	public void robotInit() {
+		
+		table = NetworkTable.getTable("datatable");
 		
 	}
 	@Override
@@ -56,6 +63,15 @@ public class Robot extends IterativeRobot {
 	}
 	@Override
 	public void teleopPeriodic() {
+		
+		double x = 0;
+		double y = 0;
+		Timer.delay(0.25);
+		table.putNumber("X", x);
+		table.putNumber("Y", y);
+		x += 0.05;
+		y += 1.0;
+		
 		double xAxis;
 		double yAxis;
 		double twist;
