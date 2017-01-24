@@ -42,10 +42,10 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		
         UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-        camera.setResolution(320, 180);
+        camera.setResolution(320, 240);
         
         CameraServer.getInstance().getVideo();
-        CameraServer.getInstance().putVideo("Blur", 320, 180);
+        CameraServer.getInstance().putVideo("Blur", 320, 240);
         
         
         
@@ -91,29 +91,34 @@ public class Robot extends IterativeRobot {
 		double xAxis;
 		double yAxis;
 		double twist = 0;
-		if(Math.abs(m_driveStick.getX()) >= 0.18){
-			xAxis = m_driveStick.getX();
-		}else{
-			xAxis = 0;			
+		double m =.8;
+		
+		if (m_driveStick.getRawButton(5)){
+			m = 1;
 		}
-		if(Math.abs(m_driveStick.getY()) >= 0.18){
-			yAxis = m_driveStick.getY();
-		}else{
-			yAxis = 0;			
-		}
-		if(Math.abs(m_driveStick.getRawAxis(4)) >= 0.18){
-			if (m_driveStick.getRawAxis(4) >= 0.18){
-				twist = Math.pow(m_driveStick.getRawAxis(4), 2);
-			}else if (m_driveStick.getRawAxis(4) <= -0.18){
-				twist = -(Math.pow(m_driveStick.getRawAxis(4), 2));
+			if(Math.abs(m_driveStick.getX()) >= 0.18){
+				xAxis = m_driveStick.getX() * m;
+			}else{
+				xAxis = 0;			
 			}
-				//twist = m_driveStick.getRawAxis(4);
-		}else{
-			twist = 0;			
-		}
-		if(Math.abs(m_driveStick.getRawAxis(4)) >= 0.8){
-			twist = .8;
-		}
+			if(Math.abs(m_driveStick.getY()) >= 0.18){
+				yAxis = m_driveStick.getY() * m;
+			}else{
+				yAxis = 0;			
+			}
+			if(Math.abs(m_driveStick.getRawAxis(4)) >= 0.18){
+				if (m_driveStick.getRawAxis(4) >= 0.18){
+					twist = Math.pow(m_driveStick.getRawAxis(4), 2) * m;
+				}else if (m_driveStick.getRawAxis(4) <= -0.18){
+					twist = -(Math.pow(m_driveStick.getRawAxis(4), 2)) * m;
+					if (m_driveStick.getRawAxis(4) == -1){
+						twist = -1 * m;
+					}
+				}
+			}else{
+				twist = 0;			
+			}
+		
 		if(m_driveStick.getRawButton(6)){
 			xAxis = xAxis/2;
 			yAxis = yAxis/2;
