@@ -1,5 +1,9 @@
 package org.usfirst.frc.team5892.robot;
 
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -16,6 +20,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
+
+
 	
 	NetworkTable table;
 	
@@ -35,7 +41,17 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		
+        UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+        camera.setResolution(320, 180);
+        
+        CameraServer.getInstance().getVideo();
+        CameraServer.getInstance().putVideo("Blur", 320, 180);
+        
+        
+        
+		
 		table = NetworkTable.getTable("datatable");
+		
 		
 	}
 	@Override
@@ -74,7 +90,7 @@ public class Robot extends IterativeRobot {
 		
 		double xAxis;
 		double yAxis;
-		double twist;
+		double twist = 0;
 		if(Math.abs(m_driveStick.getX()) >= 0.18){
 			xAxis = m_driveStick.getX();
 		}else{
@@ -86,9 +102,22 @@ public class Robot extends IterativeRobot {
 			yAxis = 0;			
 		}
 		if(Math.abs(m_driveStick.getRawAxis(4)) >= 0.18){
-			twist = m_driveStick.getRawAxis(4);
+			if (m_driveStick.getRawAxis(4) >= 0.18){
+				twist = Math.pow(m_driveStick.getRawAxis(4), 2);
+			}else if (m_driveStick.getRawAxis(4) <= -0.18){
+				twist = -(Math.pow(m_driveStick.getRawAxis(4), 2));
+			}
+				//twist = m_driveStick.getRawAxis(4);
 		}else{
 			twist = 0;			
+		}
+		if(Math.abs(m_driveStick.getRawAxis(4)) >= 0.8){
+			twist = .8;
+		}
+		if(m_driveStick.getRawButton(6)){
+			xAxis = xAxis/2;
+			yAxis = yAxis/2;
+			twist = twist/2;
 		}
 		m_robotDrive.mecanumDrive_Cartesian(xAxis, yAxis, twist,0);
 	}
