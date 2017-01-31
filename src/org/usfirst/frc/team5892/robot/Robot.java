@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.tables.ITable;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,6 +25,8 @@ public class Robot extends IterativeRobot {
 
 	
 	NetworkTable table;
+	NetworkTable visionTestTable1;
+	ITable vTT2;
 	
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
@@ -51,6 +54,8 @@ public class Robot extends IterativeRobot {
         
 		
 		table = NetworkTable.getTable("datatable");
+		visionTestTable1 = NetworkTable.getTable("PixyVision");
+		vTT2 = visionTestTable1.getSubTable("get_blocks");
 		
 		
 	}
@@ -87,6 +92,13 @@ public class Robot extends IterativeRobot {
 		table.putNumber("Y", y);
 		x += 0.05;
 		y += 1.0;
+		
+		double x1 = vTT2.getNumber("x1", -2);  //-1 indicates that no data was received from the Pixy
+		double y1 = vTT2.getNumber("y1", -2);  //-2 indicates that no data was received from the Pi
+		double x2 = vTT2.getNumber("x2", -2);
+		double y2 = vTT2.getNumber("y2", -2);
+		
+		System.out.print("Network data recieved: (" + x1 + ", " + y1 + ") and (" + x2 + ", " + y2 + ")\r");
 		
 		double xAxis;
 		double yAxis;
