@@ -43,10 +43,11 @@ public class Robot extends IterativeRobot {
 	
 	public AnalogInput pidA = new AnalogInput(1);
     public AnalogInput pidB = new AnalogInput(2);
-    public int averageA = pidA.getAverageValue();
-    public int averageB = pidB.getAverageValue();
+    //public int averageA = pidA.getAverageValue();
+    //public int averageB = pidB.getAverageValue();
+	public int rawA = pidA.getValue();
+	public int rawB = pidB.getValue();
 	
-    
 	@Override
 	public void robotInit(){
 		
@@ -94,9 +95,23 @@ public class Robot extends IterativeRobot {
 		y += 1.0;
 		
 		//PID motor
-		 
-		 SmartDashboard.putNumber("PID A", averageA);
-         SmartDashboard.putNumber("PID B", averageB);
+		 SmartDashboard.putNumber("PID A", rawA);
+         SmartDashboard.putNumber("PID B", rawB);
+  
+         if(Math.abs(m_driveStick.getRawAxis(2)) >= .2){
+        	 double Ltrigger = m_driveStick.getRawAxis(2);
+        	 shooter.set(Ltrigger);
+         }else{
+        	 shooter.set(0);
+         }
+         /*
+         if(Math.abs(m_driveStick.getRawAxis(3)) >= .2){
+        	 shooter.set(1);
+         }else{
+        	 shooter.set(0);
+         }
+       
+      
          
 		if(m_driveStick.getRawButton(1)){
 				shooter.set(1);	
@@ -107,7 +122,7 @@ public class Robot extends IterativeRobot {
 				shooter.set(0);
 			}
 		}
-
+*/
 		
 		//drive
 		double xAxis;
