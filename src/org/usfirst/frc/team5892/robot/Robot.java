@@ -1,13 +1,14 @@
 package org.usfirst.frc.team5892.robot;
 
-import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,19 +38,23 @@ public class Robot extends IterativeRobot {
 	 */
 	
 	RobotDrive m_robotDrive = new RobotDrive(1, 2, 3, 4);
+	Victor shooter = new Victor(5);
 	Joystick m_driveStick = new Joystick(1);
+	
+	public AnalogInput pidA = new AnalogInput(1);
+    public AnalogInput pidB = new AnalogInput(2);
+    public int averageA = pidA.getAverageValue();
+    public int averageB = pidB.getAverageValue();
+	
+    
 	@Override
-	public void robotInit() {
+	public void robotInit(){
 		
         UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setResolution(320, 240);
         
         CameraServer.getInstance().getVideo();
         CameraServer.getInstance().putVideo("Blur", 320, 240);
-        
-        
-        
-		
 		table = NetworkTable.getTable("datatable");
 		
 		
@@ -79,7 +84,7 @@ public class Robot extends IterativeRobot {
 	}
 	@Override
 	public void teleopPeriodic() {
-		
+		//network table
 		double x = 0;
 		double y = 0;
 		Timer.delay(0.25);
@@ -88,6 +93,23 @@ public class Robot extends IterativeRobot {
 		x += 0.05;
 		y += 1.0;
 		
+		//PID motor
+		 
+		 SmartDashboard.putNumber("PID A", averageA);
+         SmartDashboard.putNumber("PID B", averageB);
+         
+		if(m_driveStick.getRawButton(1)){
+				shooter.set(1);	
+			}else{
+				if(m_driveStick.getRawButton(2)){
+				shooter.set(-1);
+			}else{
+				shooter.set(0);
+			}
+		}
+
+		
+		//drive
 		double xAxis;
 		double yAxis;
 		double twist = 0;
