@@ -63,15 +63,15 @@ while 1:
           max_blocks[0] = blocks[index]
         elif max_blocks[1] is None or blocks[index].width * blocks[index].height > max_blocks[1].width * max_blocks[1].height:
           max_blocks[1] = blocks[index]
-      if max_blocks[0] is not None:
-        ntable.putNumber("xpos1", max_blocks[0].x)
-        ntable.putNumber("ypos1", max_blocks[0].y)
-        if max_blocks[1] is not None:
-          ntable.putNumber("xpos2", max_blocks[1].x)
-          ntable.putNumber("ypos2", max_blocks[1].y)
-        else:
-          ntable.putNumber("xpos2", -1)  # -1 denotes that there is not a block. Which is kind of obvious but w/e.
-          ntable.putNumber("ypos2", -1)
+    if max_blocks[0] is not None:
+      ntable.putNumber("xpos1", max_blocks[0].x)
+      ntable.putNumber("ypos1", max_blocks[0].y)
+      if max_blocks[1] is not None:
+        ntable.putNumber("xpos2", max_blocks[1].x)
+        ntable.putNumber("ypos2", max_blocks[1].y)
       else:
-        ntable.putNumber("xpos1", -1)
-        ntable.putNumber("ypos1", -1)
+        ntable.putNumber("xpos2", -1)  # -1 denotes that there is not a block. Which is kind of obvious but w/e.
+        ntable.putNumber("ypos2", -1)
+    else:
+      ntable.putNumber("xpos1", -1)
+      ntable.putNumber("ypos1", -1)
