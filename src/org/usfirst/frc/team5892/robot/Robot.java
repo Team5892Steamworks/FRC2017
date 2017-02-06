@@ -97,14 +97,22 @@ public class Robot extends IterativeRobot {
 		//PID motor
 		 SmartDashboard.putNumber("PID A", rawA);
          SmartDashboard.putNumber("PID B", rawB);
-  
+         
+         
+         if(m_driveStick.getRawButton(1)){
+        	 shooter.set(-1);
+         }else{
+        	 shooter.set(0);
+         }
+        
+         /*
          if(Math.abs(m_driveStick.getRawAxis(2)) >= .2){
         	 double Ltrigger = m_driveStick.getRawAxis(2);
         	 shooter.set(Ltrigger);
          }else{
         	 shooter.set(0);
          }
-         /*
+         
          if(Math.abs(m_driveStick.getRawAxis(3)) >= .2){
         	 shooter.set(1);
          }else{
