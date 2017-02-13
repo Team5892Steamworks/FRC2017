@@ -1,6 +1,5 @@
 package org.usfirst.frc.team5892.robot;
 
-import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -28,7 +27,9 @@ public class Robot extends IterativeRobot {
 	
 	final String defaultAuto = "Default";
 	final String customAuto = "My Auto";
+	final String drive = "Drive for 10";
 	String autoSelected;
+	
 	SendableChooser<String> chooser = new SendableChooser<>();
 /*
 	 *     - PWM 3 - Connected to front left drive motor
@@ -41,6 +42,7 @@ public class Robot extends IterativeRobot {
 	Victor intake = new Victor(9);
 	Victor agetator = new Victor(0);
 	Victor shooter = new Victor(1);
+	Victor shooterIntake = new Victor(4);
 	Joystick m_driveStick = new Joystick(1);
 	
 	public AnalogInput pidA = new AnalogInput(1);
@@ -52,27 +54,24 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void robotInit(){
-		
+		//camera
+		/*
         UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setResolution(320, 240);
         
         CameraServer.getInstance().getVideo();
         CameraServer.getInstance().putVideo("Blur", 320, 240);
 		table = NetworkTable.getTable("datatable");
-		
+		*/
 		
 	}
 	@Override
 	public void autonomousInit() {
 		autoSelected = chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
+		autoSelected = SmartDashboard.getString("Auto Selector", defaultAuto);
 		System.out.println("Auto selected: " + autoSelected);
 	}
-
-	/**
-	 * This function is called periodically during autonomous
-	 */
+	
 	@Override
 	public void autonomousPeriodic() {
 		switch (autoSelected) {
@@ -83,8 +82,12 @@ public class Robot extends IterativeRobot {
 		default:
 			// Put default auto code here
 			break;
+		case drive:
+			//Put drive code here
+			break;
 		}
 	}
+	
 	@Override
 	public void teleopPeriodic() {
 		//network table
@@ -107,26 +110,14 @@ public class Robot extends IterativeRobot {
         	 intake.set(0);
          }
         
-         /*
-         if(Math.abs(m_driveStick.getRawAxis(2)) >= .2){
-        	 double Ltrigger = m_driveStick.getRawAxis(2);
-        	 shooter.set(Ltrigger);
-         }else{
-        	 shooter.set(0);
-         }
-         
-         if(Math.abs(m_driveStick.getRawAxis(3)) >= .2){
-        	 shooter.set(1);
-         }else{
-        	 shooter.set(0);
-         }
-  */     
-      
-         
+      //shooter
+         double shootSpeed = SmartDashboard.getNumber("Flywheel Speed", .55);
 		if(m_driveStick.getRawButton(2)){
-				shooter.set(.55);	
+				shooter.set(shootSpeed);	
+				shooterIntake.set(.5);
 			}else{
 				shooter.set(0);
+				shooterIntake.set(0);
 			}
 		
 
@@ -162,10 +153,10 @@ public class Robot extends IterativeRobot {
 			if(Math.abs(m_driveStick.getRawAxis(1)) >= 0.18){
 				if (m_driveStick.getRawAxis(1) >= 0.18){
 					//twist = Math.pow(m_driveStick.getRawAxis(1), 2) * m;
-					twist = Math.sin(3 * Math.PI *m_driveStick.getRawAxis(1)+ 2); 
+					twist = Math.sin(3 * Math.PI *m_driveStick.getRawAxis(1)+ 2) * m; 
 				}else if (m_driveStick.getRawAxis(1) <= -0.18){
 					//twist = -(Math.pow(m_driveStick.getRawAxis(1), 2)) * m;
-					twist = -Math.sin(3 * Math.PI *m_driveStick.getRawAxis(1)+ 2);
+					twist = -Math.sin(3 * Math.PI *m_driveStick.getRawAxis(1)+ 2) * m;
 					if (m_driveStick.getRawAxis(1) == -1){
 						twist = -1 * m;
 					}
