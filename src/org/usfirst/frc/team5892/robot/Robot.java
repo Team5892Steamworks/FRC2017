@@ -31,14 +31,16 @@ public class Robot extends IterativeRobot {
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
 /*
-	 *     - PWM 1 - Connected to front left drive motor
-	 *     - PWM 2 - Connected to rear left drive motor
-	 *     - PWM 3 - Connected to front right drive motor
-	 *     - PWM 4 - Connected to rear right drive motor
+	 *     - PWM 3 - Connected to front left drive motor
+	 *     - PWM 7 - Connected to rear left drive motor
+	 *     - PWM 8 - Connected to front right drive motor
+	 *     - PWM 2 - Connected to rear right drive motor
 	 */
 	
-	RobotDrive m_robotDrive = new RobotDrive(1, 2, 3, 4);
-	Victor shooter = new Victor(5);
+	RobotDrive m_robotDrive = new RobotDrive(3, 7, 8, 2);
+	Victor intake = new Victor(9);
+	Victor agetator = new Victor(0);
+	Victor shooter = new Victor(1);
 	Joystick m_driveStick = new Joystick(1);
 	
 	public AnalogInput pidA = new AnalogInput(1);
@@ -98,11 +100,11 @@ public class Robot extends IterativeRobot {
 		 SmartDashboard.putNumber("PID A", rawA);
          SmartDashboard.putNumber("PID B", rawB);
          
-         
+        //intake 
          if(m_driveStick.getRawButton(1)){
-        	 shooter.set(-1);
+        	 intake.set(-1);
          }else{
-        	 shooter.set(0);
+        	 intake.set(0);
          }
         
          /*
@@ -118,25 +120,31 @@ public class Robot extends IterativeRobot {
          }else{
         	 shooter.set(0);
          }
-       
+  */     
       
          
-		if(m_driveStick.getRawButton(1)){
-				shooter.set(1);	
-			}else{
-				if(m_driveStick.getRawButton(2)){
-				shooter.set(-1);
+		if(m_driveStick.getRawButton(2)){
+				shooter.set(.55);	
 			}else{
 				shooter.set(0);
 			}
-		}
-*/
 		
+
+		//agetator
+		double rng = Math.ceil(Math.random()*10);
+		if(rng>=6){
+			agetator.set(.5);
+			Timer.delay(5);
+		}else{
+			agetator.set(-5);
+			Timer.delay(5);
+		}
+    	   
 		//drive
 		double xAxis;
 		double yAxis;
 		double twist = 0;
-		double m =.8;
+		double m = 0.8;
 		
 		if (m_driveStick.getRawButton(5)){
 			m = 1;
@@ -146,17 +154,19 @@ public class Robot extends IterativeRobot {
 			}else{
 				xAxis = 0;			
 			}
-			if(Math.abs(m_driveStick.getY()) >= 0.18){
-				yAxis = m_driveStick.getY() * m;
+			if(Math.abs(m_driveStick.getRawAxis(4)) >= 0.18){
+				yAxis = m_driveStick.getRawAxis(4) * m;
 			}else{
 				yAxis = 0;			
 			}
-			if(Math.abs(m_driveStick.getRawAxis(4)) >= 0.18){
-				if (m_driveStick.getRawAxis(4) >= 0.18){
-					twist = Math.pow(m_driveStick.getRawAxis(4), 2) * m;
-				}else if (m_driveStick.getRawAxis(4) <= -0.18){
-					twist = -(Math.pow(m_driveStick.getRawAxis(4), 2)) * m;
-					if (m_driveStick.getRawAxis(4) == -1){
+			if(Math.abs(m_driveStick.getRawAxis(1)) >= 0.18){
+				if (m_driveStick.getRawAxis(1) >= 0.18){
+					//twist = Math.pow(m_driveStick.getRawAxis(1), 2) * m;
+					twist = Math.sin(3 * Math.PI *m_driveStick.getRawAxis(1)+ 2); 
+				}else if (m_driveStick.getRawAxis(1) <= -0.18){
+					//twist = -(Math.pow(m_driveStick.getRawAxis(1), 2)) * m;
+					twist = -Math.sin(3 * Math.PI *m_driveStick.getRawAxis(1)+ 2);
+					if (m_driveStick.getRawAxis(1) == -1){
 						twist = -1 * m;
 					}
 				}
@@ -170,9 +180,12 @@ public class Robot extends IterativeRobot {
 			twist = twist/2;
 		}
 		m_robotDrive.mecanumDrive_Cartesian(xAxis, yAxis, twist,0);
-	}
+
+	/*
 	@Override
-	public void testPeriodic() {
+	public void testPeriodic{
+	}
+	*/
 	}
 }
 
